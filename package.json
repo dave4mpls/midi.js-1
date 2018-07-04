@@ -1,6 +1,6 @@
 {
   "name": "midi_drums",
-  "version": "0.3.6",
+  "version": "0.3.9",
   "description": "A modern JavaScript port of MIDI.js.  Adding drum sounds and modern WebMIDI support.",
   "author": "dave4mpls",
   "license": "MIT",

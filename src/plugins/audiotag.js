@@ -21,6 +21,7 @@ window.Audio && (function () {
 
   var playChannel = function (channel, note) {
     if (!root.channels[channel]) return
+    if (channel == 9) root.channels[channel].instrument = 128;
     var instrument = root.channels[channel].instrument
     var instrumentId = root.GM.byId[instrument].id
     note = notes[note]
@@ -44,6 +45,7 @@ window.Audio && (function () {
 
   var stopChannel = function (channel, note) {
     if (!root.channels[channel]) return
+    if (channel == 9) root.channels[channel].instrument = 128;
     var instrument = root.channels[channel].instrument
     var instrumentId = root.GM.byId[instrument].id
     note = notes[note]

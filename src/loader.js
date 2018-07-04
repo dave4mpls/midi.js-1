@@ -85,7 +85,7 @@ root.loadPlugin = function (opts) {
 */
 
 root.loadResource = function (opts) {
-  var instruments = opts.instruments || opts.instrument || 'acoustic_grand_piano'
+  var instruments = opts.instruments || opts.instrument || ['acoustic_grand_piano','drums']
   // /
   if (typeof instruments !== 'object') {
     if (instruments || instruments === 0) {

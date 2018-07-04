@@ -71,6 +71,7 @@ window.AudioContext && (function () {
 
     // / check whether the note exists
     var channel = root.channels[channelId]
+    if (channelId==9) channel.instrument = 128;
     var instrument = channel.instrument
     var bufferId = instrument + '' + noteId
     var buffer = audioBuffers[bufferId]
@@ -135,6 +136,7 @@ window.AudioContext && (function () {
 
     // / check whether the note exists
     var channel = root.channels[channelId]
+    if (channelId==9) channel.instrument = 128;
     var instrument = channel.instrument
     var bufferId = instrument + '' + noteId
     var buffer = audioBuffers[bufferId]
