@@ -1,13 +1,13 @@
 {
-  "name": "midi.js",
-  "version": "0.3.1",
-  "description": "A modern JavaScript port of MIDI.js.",
-  "author": "SuneBear",
+  "name": "midi_drums",
+  "version": "0.3.5",
+  "description": "A modern JavaScript port of MIDI.js.  Adding drum sounds and modern WebMIDI support.",
+  "author": "dave4mpls",
   "license": "MIT",
-  "homepage": "https://github.com/SuneBear/midi.js",
+  "homepage": "https://github.com/dave4mpls/midi_drums",
   "repository": {
     "type": "git",
-    "url": "git@github.com:SuneBear/midi.js.git"
+    "url": "git@github.com:dave4mpls/midi_drums.git"
   },
   "keywords": [
     "midi",
