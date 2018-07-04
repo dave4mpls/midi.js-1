@@ -1,6 +1,6 @@
 {
   "name": "midi_drums",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "A modern JavaScript port of MIDI.js.  Adding drum sounds and modern WebMIDI support.",
   "author": "dave4mpls",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "lib",
     "LICENSE"
   ],
-  "main": "lib/midi.js",
+  "main": "lib/midi.min.js",
   "scripts": {
     "dev": "webpack --progress --colors --watch & browser-sync start -s examples --ss lib --files examples lib --no-open",
     "build": "rm -rf lib && webpack && BUILD=1 webpack",
@@ -27,16 +27,21 @@
   "devDependencies": {
     "babel-core": "^6.14.0",
     "babel-eslint": "^6.1.2",
-    "babel-loader": "^6.2.5",
+    "babel-loader": "^7.1.4",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "browser-sync": "^2.15.0",
     "babel-preset-es2015": "^6.14.0",
     "babel-preset-stage-0": "^6.5.0",
-    "gh-pages": "^0.11.0",
+    "browser-sync": "^2.15.0",
     "chai": "3.4.1",
+    "gh-pages": "^0.11.0",
     "mocha": "2.3.4",
+    "serviceworker-webpack-plugin": "^1.0.0-alpha02",
     "standard": "^8.0.0",
     "standard-loader": "^5.0.0",
-    "webpack": "1.13.2"
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "webpack-cli": "^3.0.8"
+  },
+  "dependencies": {
+    "webpack": "^4.14.0"
   }
 }

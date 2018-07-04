@@ -1,5 +1,5 @@
 const webpack = require('webpack')
-const UglifyJsPlugin = webpack.optimize.UglifyJsPlugin
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const path = require('path')
 const isBuild = !!process.env.BUILD || false
 
@@ -9,7 +9,7 @@ const plugins = []
 let outputFile
 
 if (isBuild) {
-  plugins.push(new UglifyJsPlugin({ minimize: true }))
+  plugins.push(new UglifyJsPlugin())
   outputFile = libraryName + '.min.js'
 } else {
   outputFile = libraryName + '.js'
@@ -28,28 +28,18 @@ const config = {
     umdNamedDefine: true
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /(\.js)$/,
-        loader: 'babel',
+        use: ['babel-loader'],
         exclude: /(node_modules|bower_components)/
-      },
-      {
-        test: /(\.js)$/,
-        loader: "standard",
-        exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    root: path.resolve('./src'),
-    extensions: ['', '.js']
+    extensions: ['*', '.js']
   },
-  plugins: plugins,
-  standard: {
-    parser: 'babel-eslint',
-    global: [ '__DEBUG__' ]
-  }
+  plugins: plugins
 }
 
 module.exports = config
