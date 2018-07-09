@@ -202,8 +202,8 @@ window.AudioContext && (function () {
         delay += ctx.currentTime
       }
       var source = sources[sid]
-      source.gain.linearRampToValueAtTime(1, delay)
-      source.gain.linearRampToValueAtTime(0, delay + 0.3)
+      source.gainNode.gain.linearRampToValueAtTime(1, delay)
+      source.gainNode.gain.linearRampToValueAtTime(0, delay + 0.3)
       if (source.noteOff) { // old api
         source.noteOff(delay + 0.3)
       } else { // new api

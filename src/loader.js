@@ -45,17 +45,29 @@ root.loadPlugin = function (opts) {
     var hash = window.location.hash
     var api = ''
 
+    root.supports = supports;   // save support structure for caller's use
+
     // / use the most appropriate plugin if not specified
     if (supports[opts.api]) {
       api = opts.api
     } else if (supports[hash.substr(1)]) {
       api = hash.substr(1)
-    } else if (supports.webmidi) {
-      api = 'webmidi'
+    //--- WebMIDI is an ADDITIONAL format that we make available, if the browser has it.
+    //--- We don't set it to be the default though-- we continue using webaudio/audiotag.
+    //} else if (supports.webmidi) {
+    //  api = 'webmidi'
     } else if (window.AudioContext) { // Chrome
       api = 'webaudio'
     } else if (window.Audio) { // Firefox
       api = 'audiotag'
+    }
+
+    // load web midi if supported, but then switch to actual correct format.
+    if (supports.webmidi && connect['webmidi']) {
+      root.__api = "webmidi"
+      root.__audioFormat = supports['audio/ogg'] ? 'ogg' : 'mp3';
+      root.supports = supports;
+      root.loadResource(opts);
     }
 
     if (connect[api]) {
