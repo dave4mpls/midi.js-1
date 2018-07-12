@@ -62,28 +62,41 @@ root.loadPlugin = function (opts) {
       api = 'audiotag'
     }
 
+    // we define the part that happens at the end first, as a nested function.
+    // Then, we either call it, or send it to the web midi function to have it called after
+    // web midi is done, if the browser has web midi.  That way, web midi is completed
+    // before we get to the caller's success function, and we don't get errors on firefox
+    // and samsung internet browser, which take longer to load MIDI.
+    //
+    let loadMainPlugin = function() {
+      if (connect[api]) {
+        // / use audio/ogg when supported
+        let audioFormat
+        if (opts.targetFormat) {
+          audioFormat = opts.targetFormat
+        } else { // use best quality
+          audioFormat = supports['audio/ogg'] ? 'ogg' : 'mp3'
+        }
+
+        // / load the specified plugin
+        root.__api = api
+        root.__audioFormat = audioFormat
+        root.supports = supports
+        root.loadResource(opts)
+      }
+    };
+
     // load web midi if supported, but then switch to actual correct format.
     if (supports.webmidi && connect['webmidi']) {
       root.__api = "webmidi"
       root.__audioFormat = supports['audio/ogg'] ? 'ogg' : 'mp3';
       root.supports = supports;
+      opts.afterMidiFunction = loadMainPlugin;
       root.loadResource(opts);
     }
-
-    if (connect[api]) {
-      // / use audio/ogg when supported
-      let audioFormat
-      if (opts.targetFormat) {
-        audioFormat = opts.targetFormat
-      } else { // use best quality
-        audioFormat = supports['audio/ogg'] ? 'ogg' : 'mp3'
-      }
-
-      // / load the specified plugin
-      root.__api = api
-      root.__audioFormat = audioFormat
-      root.supports = supports
-      root.loadResource(opts)
+    else {
+      // no web midi -- just run the function to load the main plugin.
+      loadMainPlugin();
     }
   })
 }

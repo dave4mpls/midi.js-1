@@ -65,7 +65,11 @@ import root from '../root'
 
   midi.pitchBend = function (channel, program, delay) { // pitch bend
     channel &= 0x0F;
-    midi.send([0xE0 + channel, program], delay)
+    if (program < 0) program = 0;
+    if (program > 16383) program = 16383;
+    let program_lsb = program & 0x7F;
+    let program_msb = program >> 7;
+    midi.send([0xE0 + channel, program_lsb, program_msb], delay)
   }
 
   midi.noteOn = function (channel, note, velocity, delay) {
@@ -139,8 +143,10 @@ import root from '../root'
     // we don't listen on all inputs because then no other programs may be able to use them.
     midi.refreshInputs();
     for (var i = 0; i < midi.inputList.length; i++) {
+      if (!midi.inputHash[midi.inputList[i].id]) continue;  // skip internal input
       try { 
-        midi.inputHash[midi.inputList[i].id].close();
+        //Chrome doesn't like closing things, unfortunately.
+        //midi.inputHash[midi.inputList[i].id].close();
         midi.inputHash[midi.inputList[i].id].onmidimessage = undefined; 
       } catch(e) { }
     }
@@ -181,7 +187,10 @@ import root from '../root'
     for (var i = 0; i < iids.length; i++) {
       if (midi.inputHash.hasOwnProperty(iids[i])) {
         var thisInput = midi.inputHash[iids[i]];
-        if (thisInput) thisInput.onmidimessage = midi.handleMIDIInput;
+        if (thisInput) {
+          thisInput.onmidimessage = midi.handleMIDIInput;
+          thisInput.open();
+        }
         midi.input.push(thisInput);
       }
     }
@@ -193,23 +202,20 @@ import root from '../root'
     //   callers must access it directly after setting output, etc.
     //root.setDefaultPlugin(midi)
     var errFunction = function (err) { // well at least we tried!
-      if (window.AudioContext) { // Chrome
-        opts.api = 'webaudio'
-      } else if (window.Audio) { // Firefox
-        opts.api = 'audiotag'
-      } else { // no support
-        return err
-      }
-      root.loadPlugin(opts)
+      opts.afterMidiFunction();
     }
     // /
     let midiAccessFunction = function() {
       plugin = midi.MIDIAccess;
       midi.refreshInputs();
       midi.refreshOutputs();
-      // we do NOT call the on-success function -- it is called for webaudio or audiotag,
-      // because webmidi is just an ADDITIONAL feature.
-      // opts.onsuccess && opts.onsuccess()
+      // we do NOT call the on-success function -- instead we call the afterMidiFunction,
+      // which is passed by the loader.  It loads the main sound plugin (typically webaudio),
+      // and then calls the success function.  This way, the order is correct and by the time
+      // the caller's success function gets called, both Midi and WebAudio will be ready.
+      // (Remember, this midiAccessFunction gets called asynchronously by the "then" clause on
+      // requestMIDIAccess.)
+      opts.afterMidiFunction();
     };
     if (midi.MIDIAccess) {
         midiAccessFunction();
